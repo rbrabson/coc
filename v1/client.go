@@ -77,7 +77,7 @@ func (c *Client) GetClan(clanTag string) (*Clan, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) GetClanLabels(qparms ...interface{}) ([]Label, error) {
+func (c *Client) GetClanLabels(qparms ...QParms) ([]Label, error) {
 	const M = "Client.GetClanLabels"
 	l := log.New()
 	defer l.Sync()
@@ -90,7 +90,14 @@ func (c *Client) GetClanLabels(qparms ...interface{}) ([]Label, error) {
 	sb.WriteString(baseURL)
 	sb.WriteString("/labels/clans/")
 
-	body, err := getURL(sb.String(), getQueryParms(qparms...), c.token)
+	// Build the URL and get the response body
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	} else {
+		qp = nil
+	}
+	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +126,7 @@ func (c *Client) GetClanLabels(qparms ...interface{}) ([]Label, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) GetClanMembers(clanTag string, qparms ...interface{}) ([]ClanMember, error) {
+func (c *Client) GetClanMembers(clanTag string, qparms ...QParms) ([]ClanMember, error) {
 	const M = "Client.GetClanMembers"
 	l := log.New()
 	defer l.Sync()
@@ -134,7 +141,14 @@ func (c *Client) GetClanMembers(clanTag string, qparms ...interface{}) ([]ClanMe
 	sb.WriteString(fmtTag(clanTag))
 	sb.WriteString("/members")
 
-	body, err := getURL(sb.String(), getQueryParms(qparms...), c.token)
+	// Build the URL and get the response body
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	} else {
+		qp = nil
+	}
+	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
 	if err != nil {
 		return nil, err
 	}
@@ -164,7 +178,7 @@ func (c *Client) GetClanMembers(clanTag string, qparms ...interface{}) ([]ClanMe
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) GetClanRankings(locationID string, qparms ...interface{}) ([]ClanRanking, error) {
+func (c *Client) GetClanRankings(locationID string, qparms ...QParms) ([]ClanRanking, error) {
 	const M = "Client.GetClanRankings"
 	l := log.New()
 	defer l.Sync()
@@ -181,7 +195,14 @@ func (c *Client) GetClanRankings(locationID string, qparms ...interface{}) ([]Cl
 	url := sb.String()
 	l.Debug(url)
 
-	body, err := getURL(url, getQueryParms(qparms...), c.token)
+	// Build the URL and get the response body
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	} else {
+		qp = nil
+	}
+	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
 	if err != nil {
 		return nil, err
 	}
@@ -211,7 +232,7 @@ func (c *Client) GetClanRankings(locationID string, qparms ...interface{}) ([]Cl
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) GetClanVersusRankings(locationID string, qparms ...interface{}) ([]ClanVersusRanking, error) {
+func (c *Client) GetClanVersusRankings(locationID string, qparms ...QParms) ([]ClanVersusRanking, error) {
 	const M = "Client.GetClanVersusRankings"
 	l := log.New()
 	defer l.Sync()
@@ -228,7 +249,14 @@ func (c *Client) GetClanVersusRankings(locationID string, qparms ...interface{})
 	url := sb.String()
 	l.Debug(url)
 
-	body, err := getURL(url, getQueryParms(qparms), c.token)
+	// Build the URL and get the response body
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	} else {
+		qp = nil
+	}
+	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
 	if err != nil {
 		return nil, err
 	}
@@ -281,7 +309,7 @@ func (c *Client) GetClanVersusRankings(locationID string, qparms ...interface{})
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) SearchClans(qparms ...interface{}) ([]Clan, error) {
+func (c *Client) SearchClans(qparms QParms) ([]Clan, error) {
 	const M = "Client.SearchClans"
 	l := log.New()
 	defer l.Sync()
@@ -296,7 +324,7 @@ func (c *Client) SearchClans(qparms ...interface{}) ([]Clan, error) {
 	url := sb.String()
 	l.Debug(url)
 
-	body, err := getURL(url, getQueryParms(qparms...), c.token)
+	body, err := getURL(url, getQueryParms(&qparms), c.token)
 	if err != nil {
 		return nil, err
 	}
@@ -325,7 +353,7 @@ func (c *Client) SearchClans(qparms ...interface{}) ([]Clan, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) GetClanWarLog(clanTag string, qparms ...interface{}) ([]ClanWar, error) {
+func (c *Client) GetClanWarLog(clanTag string, qparms ...QParms) ([]ClanWar, error) {
 	const M = "Client.GetClanWarLog"
 	l := log.New()
 	defer l.Sync()
@@ -342,7 +370,14 @@ func (c *Client) GetClanWarLog(clanTag string, qparms ...interface{}) ([]ClanWar
 	url := sb.String()
 	l.Debug(url)
 
-	body, err := getURL(url, getQueryParms(qparms...), c.token)
+	// Build the URL and get the response body
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	} else {
+		qp = nil
+	}
+	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
 	if err != nil {
 		return nil, err
 	}
@@ -545,7 +580,7 @@ func (c *Client) GetLeague(leagueID string) (*League, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) GetLeagues(qparms ...interface{}) ([]League, error) {
+func (c *Client) GetLeagues(qparms ...QParms) ([]League, error) {
 	const M = "Client.GetLeagues"
 	l := log.New()
 	defer l.Sync()
@@ -558,7 +593,14 @@ func (c *Client) GetLeagues(qparms ...interface{}) ([]League, error) {
 	sb.WriteString(baseURL)
 	sb.WriteString("/leagues/")
 
-	body, err := getURL(sb.String(), getQueryParms(qparms...), c.token)
+	// Build the URL and get the response body
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	} else {
+		qp = nil
+	}
+	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
 	if err != nil {
 		return nil, err
 	}
@@ -588,7 +630,7 @@ func (c *Client) GetLeagues(qparms ...interface{}) ([]League, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) GetLeagueSeasons(leagueID string, qparms ...interface{}) ([]LeagueSeason, error) {
+func (c *Client) GetLeagueSeasons(leagueID string, qparms ...QParms) ([]LeagueSeason, error) {
 	const M = "Client.GetLeagues"
 	l := log.New()
 	defer l.Sync()
@@ -605,7 +647,14 @@ func (c *Client) GetLeagueSeasons(leagueID string, qparms ...interface{}) ([]Lea
 	url := sb.String()
 	l.Debug(url)
 
-	body, err := getURL(url, getQueryParms(qparms...), c.token)
+	// Build the URL and get the response body
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	} else {
+		qp = nil
+	}
+	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
 	if err != nil {
 		return nil, err
 	}
@@ -716,7 +765,7 @@ func (c *Client) GetWarLeague(leagueID string) (*WarLeague, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both.
-func (c *Client) GetWarLeagues(qparms ...interface{}) ([]WarLeague, error) {
+func (c *Client) GetWarLeagues(qparms ...QParms) ([]WarLeague, error) {
 	const M = "Client.GetWarLeagues"
 	l := log.New()
 	defer l.Sync()
@@ -731,7 +780,14 @@ func (c *Client) GetWarLeagues(qparms ...interface{}) ([]WarLeague, error) {
 	url := sb.String()
 	l.Debug(url)
 
-	body, err := getURL(url, getQueryParms(qparms...), c.token)
+	// Build the URL and get the response body
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	} else {
+		qp = nil
+	}
+	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
 	if err != nil {
 		return nil, err
 	}
@@ -797,7 +853,7 @@ func (c *Client) GetLocation(locationID string) (*Location, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both.
-func (c *Client) GetLocations(qparms ...interface{}) ([]Location, error) {
+func (c *Client) GetLocations(qparms ...QParms) ([]Location, error) {
 	const M = "Client.GetLocations"
 	l := log.New()
 	defer l.Sync()
@@ -812,7 +868,14 @@ func (c *Client) GetLocations(qparms ...interface{}) ([]Location, error) {
 	url := sb.String()
 	l.Debug(url)
 
-	body, err := getURL(url, getQueryParms(qparms...), c.token)
+	// Build the URL and get the response body
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	} else {
+		qp = nil
+	}
+	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
 	if err != nil {
 		return nil, err
 	}
@@ -875,7 +938,7 @@ func (c *Client) GetPlayer(playerTag string) (*Player, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both.
-func (c *Client) GetPlayerLabels(qparms ...interface{}) ([]Label, error) {
+func (c *Client) GetPlayerLabels(qparms ...QParms) ([]Label, error) {
 	const M = "Client.GetPlayerLabels"
 	l := log.New()
 	defer l.Sync()
@@ -888,11 +951,17 @@ func (c *Client) GetPlayerLabels(qparms ...interface{}) ([]Label, error) {
 	sb.WriteString(baseURL)
 	sb.WriteString("/labels/players/")
 
-	body, err := getURL(sb.String(), getQueryParms(qparms...), c.token)
+	// Build the URL and get the response body
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	} else {
+		qp = nil
+	}
+	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
 	if err != nil {
 		return nil, err
 	}
-
 	// Parse into an array of clans
 	type respType struct {
 		Labels []Label `json:"items"`
@@ -917,7 +986,7 @@ func (c *Client) GetPlayerLabels(qparms ...interface{}) ([]Label, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both.
-func (c *Client) GetPlayerRankings(locationID string, qparms ...interface{}) ([]PlayerRanking, error) {
+func (c *Client) GetPlayerRankings(locationID string, qparms ...QParms) ([]PlayerRanking, error) {
 	const M = "Client.GetPlayerLabels"
 	l := log.New()
 	defer l.Sync()
@@ -934,7 +1003,14 @@ func (c *Client) GetPlayerRankings(locationID string, qparms ...interface{}) ([]
 	url := sb.String()
 	l.Debug(url)
 
-	body, err := getURL(url, getQueryParms(qparms...), c.token)
+	// Build the URL and get the response body
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	} else {
+		qp = nil
+	}
+	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
 	if err != nil {
 		return nil, err
 	}
@@ -964,7 +1040,7 @@ func (c *Client) GetPlayerRankings(locationID string, qparms ...interface{}) ([]
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both.
-func (c *Client) GetPlayerVersusRankings(locationID string, qparms ...interface{}) ([]PlayerVersusRanking, error) {
+func (c *Client) GetPlayerVersusRankings(locationID string, qparms ...QParms) ([]PlayerVersusRanking, error) {
 	const M = "Client.GetPlayerLabels"
 	l := log.New()
 	defer l.Sync()
@@ -981,7 +1057,14 @@ func (c *Client) GetPlayerVersusRankings(locationID string, qparms ...interface{
 	url := sb.String()
 	l.Debug(url)
 
-	body, err := getURL(url, getQueryParms(qparms...), c.token)
+	// Build the URL and get the response body
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	} else {
+		qp = nil
+	}
+	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
 	if err != nil {
 		return nil, err
 	}
@@ -1114,7 +1197,7 @@ func postURL(url string, qparms rest.QParms, body string, token string) ([]byte,
 	return respBody, nil
 }
 
-func getQueryParms(v ...interface{}) rest.QParms {
+func getQueryParms(qp *QParms) rest.QParms {
 	const M = "getQueryParms"
 	l := log.New()
 	defer l.Sync()
@@ -1123,12 +1206,35 @@ func getQueryParms(v ...interface{}) rest.QParms {
 	defer l.Debugf("<-- %s", M)
 
 	qparms := rest.QParms{}
-
-	numValues := len(v) / 2
-	for i := 0; i < numValues; i++ {
-		key := v[i*2].(string)
-		value := v[i*2+1]
-		qparms[key] = value
+	if qp.After != 0 {
+		qparms["after"] = qp.After
+	}
+	if qp.Before != 0 {
+		qparms["before"] = qp.Before
+	}
+	if qp.Limit != 0 {
+		qparms["limit"] = qp.Limit
+	}
+	if qp.Name != "" {
+		qparms["name"] = qp.Name
+	}
+	if qp.WarFrequency != "" {
+		qparms["warFrequency"] = qp.WarFrequency
+	}
+	if qp.LocationID != "" {
+		qparms["locationId"] = qp.LocationID
+	}
+	if qp.MaxMembers != 0 {
+		qparms["maxMembers"] = qp.MaxMembers
+	}
+	if qp.MinMembers != 0 {
+		qparms["minMembers"] = qp.MinMembers
+	}
+	if qp.MinClanLevel != 0 {
+		qparms["minClanLevel"] = qp.MinClanLevel
+	}
+	if qp.MinClanPoints != 0 {
+		qparms["minClanPoints"] = qp.MinClanPoints
 	}
 
 	return qparms
