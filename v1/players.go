@@ -25,11 +25,13 @@ type Player struct {
 	Spells               []Troop             `json:"spells"`
 	Tag                  string              `json:"tag"`
 	TownHallLevel        int                 `json:"townHallLevel"`
+	TownHallWeaponLevel  int                 `json:"townHallWeaponLevel"`
 	Troops               []Troop             `json:"troops"`
 	Trophies             int                 `json:"trophies"`
 	VersusBattleWinCount int                 `json:"versusBattleWinCount"`
 	VersusBattleWins     int                 `json:"versusBattleWins"`
 	VersusTrophies       int                 `json:"versusTrophies"`
+	WarPreference        string              `json:"warPreference"`
 	WarStars             int                 `json:"warStars"`
 }
 

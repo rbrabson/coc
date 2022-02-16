@@ -2,6 +2,7 @@ package coc
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/rbrabson/coc/pkg/log"
@@ -918,6 +919,7 @@ func (c *Client) GetPlayer(playerTag string) (*Player, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(string(body))
 	var player Player
 	if err := json.Unmarshal(body, &player); err != nil {
 		l.Debug("failed to parse the json response")
@@ -1206,6 +1208,10 @@ func getQueryParms(qp *QParms) rest.QParms {
 	defer l.Debugf("<-- %s", M)
 
 	qparms := rest.QParms{}
+	if qp == nil {
+		return qparms
+	}
+
 	if qp.After != 0 {
 		qparms["after"] = qp.After
 	}
