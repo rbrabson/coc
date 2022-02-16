@@ -8,7 +8,6 @@ import (
 
 const (
 	cocTimeLayout = "20060102T150405.000Z07:00"
-	XX            = time.RFC1123
 )
 
 // Time is a redefinition of the time.Time structure.  This allows for unmarshalling of
