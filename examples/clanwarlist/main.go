@@ -67,7 +67,7 @@ func getWarList(c *cli.Context) error {
 	client := coc.NewClient(token)
 
 	// Get the clan wars
-	warList, err := client.GetClanWarLog(tag)
+	warList, _, err := client.GetClanWarLog(tag)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

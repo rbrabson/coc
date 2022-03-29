@@ -78,7 +78,7 @@ func (c *Client) GetClan(clanTag string) (*Clan, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) GetClanLabels(qparms ...QParms) ([]Label, error) {
+func (c *Client) GetClanLabels(qparms ...QParms) ([]Label, *Paging, error) {
 	const M = "Client.GetClanLabels"
 	l := log.New()
 	defer l.Sync()
@@ -90,6 +90,8 @@ func (c *Client) GetClanLabels(qparms ...QParms) ([]Label, error) {
 	sb.Grow(100)
 	sb.WriteString(baseURL)
 	sb.WriteString("/labels/clans/")
+	url := sb.String()
+	l.Debug(url)
 
 	// Build the URL and get the response body
 	var qp *QParms
@@ -98,23 +100,24 @@ func (c *Client) GetClanLabels(qparms ...QParms) ([]Label, error) {
 	} else {
 		qp = nil
 	}
-	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
+	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Parse into an array of clans
 	type respType struct {
 		Labels []Label `json:"items"`
+		Paging Paging  `json:"paging"`
 	}
 	var resp respType
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
-		return nil, err
+		return nil, nil, err
 	}
 
-	return resp.Labels, nil
+	return resp.Labels, &resp.Paging, nil
 }
 
 //  GetClanMembers list clan members.  Supported query parmeters are:
@@ -127,7 +130,7 @@ func (c *Client) GetClanLabels(qparms ...QParms) ([]Label, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) GetClanMembers(clanTag string, qparms ...QParms) ([]ClanMember, error) {
+func (c *Client) GetClanMembers(clanTag string, qparms ...QParms) ([]ClanMember, *Paging, error) {
 	const M = "Client.GetClanMembers"
 	l := log.New()
 	defer l.Sync()
@@ -141,6 +144,8 @@ func (c *Client) GetClanMembers(clanTag string, qparms ...QParms) ([]ClanMember,
 	sb.WriteString("/clans/")
 	sb.WriteString(fmtTag(clanTag))
 	sb.WriteString("/members")
+	url := sb.String()
+	l.Debug(url)
 
 	// Build the URL and get the response body
 	var qp *QParms
@@ -149,23 +154,24 @@ func (c *Client) GetClanMembers(clanTag string, qparms ...QParms) ([]ClanMember,
 	} else {
 		qp = nil
 	}
-	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
+	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Parse into an array of clans
 	type respType struct {
 		ClanMembers []ClanMember `json:"items"`
+		Paging      Paging       `json:"paging"`
 	}
 	var resp respType
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
-		return nil, err
+		return nil, nil, err
 	}
 
-	return resp.ClanMembers, nil
+	return resp.ClanMembers, &resp.Paging, nil
 
 }
 
@@ -179,7 +185,7 @@ func (c *Client) GetClanMembers(clanTag string, qparms ...QParms) ([]ClanMember,
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) GetClanRankings(locationID string, qparms ...QParms) ([]ClanRanking, error) {
+func (c *Client) GetClanRankings(locationID string, qparms ...QParms) ([]ClanRanking, *Paging, error) {
 	const M = "Client.GetClanRankings"
 	l := log.New()
 	defer l.Sync()
@@ -203,24 +209,25 @@ func (c *Client) GetClanRankings(locationID string, qparms ...QParms) ([]ClanRan
 	} else {
 		qp = nil
 	}
-	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
+	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Parse into an array of clan rankings
 	type respType struct {
 		Rankings []ClanRanking `json:"items"`
+		Paging   Paging        `json:"paging"`
 	}
 	var resp respType
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Return the clan
-	return resp.Rankings, nil
+	return resp.Rankings, &resp.Paging, nil
 }
 
 // GetClanVersusRankings gets clan versus rankings for a specific location. Supported query parmeters are:
@@ -233,7 +240,7 @@ func (c *Client) GetClanRankings(locationID string, qparms ...QParms) ([]ClanRan
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) GetClanVersusRankings(locationID string, qparms ...QParms) ([]ClanVersusRanking, error) {
+func (c *Client) GetClanVersusRankings(locationID string, qparms ...QParms) ([]ClanVersusRanking, *Paging, error) {
 	const M = "Client.GetClanVersusRankings"
 	l := log.New()
 	defer l.Sync()
@@ -257,24 +264,25 @@ func (c *Client) GetClanVersusRankings(locationID string, qparms ...QParms) ([]C
 	} else {
 		qp = nil
 	}
-	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
+	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Parse into an array of clan rankings
 	type respType struct {
 		Rankings []ClanVersusRanking `json:"items"`
+		Paging   Paging              `json:"paging"`
 	}
 	var resp respType
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Return the clan
-	return resp.Rankings, nil
+	return resp.Rankings, &resp.Paging, nil
 }
 
 // SearchClans searches all clans by name and/or filtering the results using various
@@ -310,7 +318,7 @@ func (c *Client) GetClanVersusRankings(locationID string, qparms ...QParms) ([]C
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) SearchClans(qparms QParms) ([]Clan, error) {
+func (c *Client) SearchClans(qparms QParms) ([]Clan, *Paging, error) {
 	const M = "Client.SearchClans"
 	l := log.New()
 	defer l.Sync()
@@ -327,21 +335,22 @@ func (c *Client) SearchClans(qparms QParms) ([]Clan, error) {
 
 	body, err := getURL(url, getQueryParms(&qparms), c.token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Parse into an array of clans
 	type respType struct {
-		Clans []Clan `json:"items"`
+		Clans  []Clan `json:"items"`
+		Paging Paging `json:"paging"`
 	}
 	var resp respType
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
-		return nil, err
+		return nil, nil, err
 	}
 
-	return resp.Clans, nil
+	return resp.Clans, &resp.Paging, nil
 }
 
 // GetClanWarLog retrieves clan's clan war log. Supported query parmeters are:
@@ -354,7 +363,7 @@ func (c *Client) SearchClans(qparms QParms) ([]Clan, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) GetClanWarLog(clanTag string, qparms ...QParms) ([]ClanWar, error) {
+func (c *Client) GetClanWarLog(clanTag string, qparms ...QParms) ([]ClanWar, *Paging, error) {
 	const M = "Client.GetClanWarLog"
 	l := log.New()
 	defer l.Sync()
@@ -378,20 +387,21 @@ func (c *Client) GetClanWarLog(clanTag string, qparms ...QParms) ([]ClanWar, err
 	} else {
 		qp = nil
 	}
-	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
+	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Parse into an array of clans
 	type respType struct {
 		WarLog []ClanWar `json:"items"`
+		Paging Paging    `json:"paging"`
 	}
 	var resp respType
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Find any "empty" wars and remove it from the list
@@ -420,7 +430,7 @@ func (c *Client) GetClanWarLog(clanTag string, qparms ...QParms) ([]ClanWar, err
 	}
 
 	// Return the trimmed war log
-	return warLog[:i], nil
+	return warLog[:i], &resp.Paging, nil
 }
 
 // GetClanWarCurrent retrieves information about clan's current clan war.
@@ -581,7 +591,7 @@ func (c *Client) GetLeague(leagueID string) (*League, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) GetLeagues(qparms ...QParms) ([]League, error) {
+func (c *Client) GetLeagues(qparms ...QParms) ([]League, *Paging, error) {
 	const M = "Client.GetLeagues"
 	l := log.New()
 	defer l.Sync()
@@ -593,31 +603,34 @@ func (c *Client) GetLeagues(qparms ...QParms) ([]League, error) {
 	sb.Grow(100)
 	sb.WriteString(baseURL)
 	sb.WriteString("/leagues/")
+	url := sb.String()
+	l.Debug(url)
 
-	// Build the URL and get the response body
+	// Build the query parameters and get the response body
 	var qp *QParms
 	if len(qparms) >= 1 {
 		qp = &qparms[0]
 	} else {
 		qp = nil
 	}
-	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
+	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Parse into an array of clans
 	type respType struct {
 		Leagues []League `json:"items"`
+		Paging  Paging   `json:"paging"`
 	}
 	var resp respType
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
-		return nil, err
+		return nil, nil, err
 	}
 
-	return resp.Leagues, nil
+	return resp.Leagues, &resp.Paging, nil
 }
 
 // GetLeagueSeasons gets league seasons. Note that league season information is available only for Legend League.
@@ -631,7 +644,7 @@ func (c *Client) GetLeagues(qparms ...QParms) ([]League, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both. and before
-func (c *Client) GetLeagueSeasons(leagueID string, qparms ...QParms) ([]LeagueSeason, error) {
+func (c *Client) GetLeagueSeasons(leagueID string, qparms ...QParms) ([]LeagueSeason, *Paging, error) {
 	const M = "Client.GetLeagues"
 	l := log.New()
 	defer l.Sync()
@@ -655,23 +668,24 @@ func (c *Client) GetLeagueSeasons(leagueID string, qparms ...QParms) ([]LeagueSe
 	} else {
 		qp = nil
 	}
-	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
+	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Parse into an array of clans
 	type respType struct {
 		Seasons []LeagueSeason `json:"items"`
+		Paging  Paging         `json:"paging"`
 	}
 	var resp respType
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
-		return nil, err
+		return nil, nil, err
 	}
 
-	return resp.Seasons, nil
+	return resp.Seasons, &resp.Paging, nil
 }
 
 // GetLeagueSeasonRankings gets league season rankings. Note that league season information is
@@ -685,7 +699,7 @@ func (c *Client) GetLeagueSeasons(leagueID string, qparms ...QParms) ([]LeagueSe
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both.
-func (c *Client) GetLeagueSeasonRankings(leagueID string) ([]LeagueSeasonRanking, error) {
+func (c *Client) GetLeagueSeasonRankings(leagueID string) ([]LeagueSeasonRanking, *Paging, error) {
 	const M = "Client.GetLeagues"
 	l := log.New()
 	defer l.Sync()
@@ -703,21 +717,22 @@ func (c *Client) GetLeagueSeasonRankings(leagueID string) ([]LeagueSeasonRanking
 
 	body, err := getURL(url, nil, c.token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Parse into an array of clans
 	type respType struct {
 		Rankings []LeagueSeasonRanking `json:"items"`
+		Paging   Paging                `json:"paging"`
 	}
 	var resp respType
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
-		return nil, err
+		return nil, nil, err
 	}
 
-	return resp.Rankings, nil
+	return resp.Rankings, &resp.Paging, nil
 }
 
 // GetWarLeague gets war league information.
@@ -766,7 +781,7 @@ func (c *Client) GetWarLeague(leagueID string) (*WarLeague, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both.
-func (c *Client) GetWarLeagues(qparms ...QParms) ([]WarLeague, error) {
+func (c *Client) GetWarLeagues(qparms ...QParms) ([]WarLeague, *Paging, error) {
 	const M = "Client.GetWarLeagues"
 	l := log.New()
 	defer l.Sync()
@@ -788,23 +803,24 @@ func (c *Client) GetWarLeagues(qparms ...QParms) ([]WarLeague, error) {
 	} else {
 		qp = nil
 	}
-	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
+	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Parse into an array of clans
 	type respType struct {
 		Leagues []WarLeague `json:"items"`
+		Paging  Paging      `json:"paging"`
 	}
 	var resp respType
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
-		return nil, err
+		return nil, nil, err
 	}
 
-	return resp.Leagues, nil
+	return resp.Leagues, &resp.Paging, nil
 }
 
 // GetLocation gets information about specific location.
@@ -854,7 +870,7 @@ func (c *Client) GetLocation(locationID string) (*Location, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both.
-func (c *Client) GetLocations(qparms ...QParms) ([]Location, error) {
+func (c *Client) GetLocations(qparms ...QParms) ([]Location, *Paging, error) {
 	const M = "Client.GetLocations"
 	l := log.New()
 	defer l.Sync()
@@ -876,23 +892,24 @@ func (c *Client) GetLocations(qparms ...QParms) ([]Location, error) {
 	} else {
 		qp = nil
 	}
-	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
+	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Parse into an array of clans
 	type respType struct {
 		Locations []Location `json:"items"`
+		Paging    Paging     `json:"paging"`
 	}
 	var resp respType
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
-		return nil, err
+		return nil, nil, err
 	}
 
-	return resp.Locations, nil
+	return resp.Locations, &resp.Paging, nil
 }
 
 // GetPlayer gets information about a single player by player tag. Player tags can be found either
@@ -940,7 +957,7 @@ func (c *Client) GetPlayer(playerTag string) (*Player, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both.
-func (c *Client) GetPlayerLabels(qparms ...QParms) ([]Label, error) {
+func (c *Client) GetPlayerLabels(qparms ...QParms) ([]Label, *Paging, error) {
 	const M = "Client.GetPlayerLabels"
 	l := log.New()
 	defer l.Sync()
@@ -952,6 +969,8 @@ func (c *Client) GetPlayerLabels(qparms ...QParms) ([]Label, error) {
 	sb.Grow(100)
 	sb.WriteString(baseURL)
 	sb.WriteString("/labels/players/")
+	url := sb.String()
+	l.Debug(url)
 
 	// Build the URL and get the response body
 	var qp *QParms
@@ -960,22 +979,23 @@ func (c *Client) GetPlayerLabels(qparms ...QParms) ([]Label, error) {
 	} else {
 		qp = nil
 	}
-	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
+	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	// Parse into an array of clans
 	type respType struct {
 		Labels []Label `json:"items"`
+		Paging Paging  `json:"paging"`
 	}
 	var resp respType
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
-		return nil, err
+		return nil, nil, err
 	}
 
-	return resp.Labels, nil
+	return resp.Labels, &resp.Paging, nil
 }
 
 // GetPlayerRankings gets player rankings for a specific location. Supported query parmeters are:
@@ -988,7 +1008,7 @@ func (c *Client) GetPlayerLabels(qparms ...QParms) ([]Label, error) {
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both.
-func (c *Client) GetPlayerRankings(locationID string, qparms ...QParms) ([]PlayerRanking, error) {
+func (c *Client) GetPlayerRankings(locationID string, qparms ...QParms) ([]PlayerRanking, *Paging, error) {
 	const M = "Client.GetPlayerLabels"
 	l := log.New()
 	defer l.Sync()
@@ -1012,24 +1032,25 @@ func (c *Client) GetPlayerRankings(locationID string, qparms ...QParms) ([]Playe
 	} else {
 		qp = nil
 	}
-	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
+	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Parse into an array of clans
 	type respType struct {
 		Rankings []PlayerRanking `json:"items"`
+		Paging   Paging          `json:"paging"`
 	}
 	var resp respType
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Return the player rankings
-	return resp.Rankings, nil
+	return resp.Rankings, &resp.Paging, nil
 }
 
 // GetPlayerVersusRankings gets player versus rankings for a specific location. upported query parmeters are:
@@ -1042,7 +1063,7 @@ func (c *Client) GetPlayerRankings(locationID string, qparms ...QParms) ([]Playe
 //
 // The marker can be found from the response, inside the 'paging' property.
 // Note that only after or before can be specified for a request, not both.
-func (c *Client) GetPlayerVersusRankings(locationID string, qparms ...QParms) ([]PlayerVersusRanking, error) {
+func (c *Client) GetPlayerVersusRankings(locationID string, qparms ...QParms) ([]PlayerVersusRanking, *Paging, error) {
 	const M = "Client.GetPlayerLabels"
 	l := log.New()
 	defer l.Sync()
@@ -1066,24 +1087,25 @@ func (c *Client) GetPlayerVersusRankings(locationID string, qparms ...QParms) ([
 	} else {
 		qp = nil
 	}
-	body, err := getURL(sb.String(), getQueryParms(qp), c.token)
+	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Parse into an array of clan rankings
 	type respType struct {
 		Rankings []PlayerVersusRanking `json:"items"`
+		Paging   Paging                `json:"paging"`
 	}
 	var resp respType
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Return the clan
-	return resp.Rankings, nil
+	return resp.Rankings, &resp.Paging, nil
 }
 
 // VerifyPlayerToken verifies the player API token that can be found from the game settings.
@@ -1212,10 +1234,10 @@ func getQueryParms(qp *QParms) rest.QParms {
 		return qparms
 	}
 
-	if qp.After != 0 {
+	if qp.After != "" {
 		qparms["after"] = qp.After
 	}
-	if qp.Before != 0 {
+	if qp.Before != "" {
 		qparms["before"] = qp.Before
 	}
 	if qp.Limit != 0 {

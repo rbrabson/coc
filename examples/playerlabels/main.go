@@ -58,7 +58,7 @@ func getPlayerLabels(c *cli.Context) error {
 	client := coc.NewClient(token)
 
 	// Get the player labels
-	labels, err := client.GetPlayerLabels()
+	labels, _, err := client.GetPlayerLabels()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

@@ -6,8 +6,8 @@ import "encoding/json"
 // Not all query parameters are supported on each API call; refer to the API to
 // determine those supported for the given call.
 type QParms struct {
-	After         int    // Limits items that occur after this marker to be returned
-	Before        int    // Limits items that occur before this marker to be returned
+	After         string // Limits items that occur after this marker to be returned
+	Before        string // Limits items that occur before this marker to be returned
 	Limit         int    // Limits the number of items returned
 	Name          string // Searches for clans by name
 	WarFrequency  string // Filters clans by war frequency

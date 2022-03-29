@@ -58,11 +58,12 @@ func getClanLabels(c *cli.Context) error {
 	client := coc.NewClient(token)
 
 	// Get the clan labels
-	labels, err := client.GetClanLabels()
+	labels, paging, err := client.GetClanLabels(coc.QParms{Limit: 5})
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	fmt.Println(paging)
 
 	for _, league := range labels {
 		fmt.Printf("League: %s, ID: %d\n", league.Name, league.ID)
