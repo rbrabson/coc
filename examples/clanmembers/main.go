@@ -67,7 +67,7 @@ func getClanMembers(c *cli.Context) error {
 	client := coc.NewClient(token)
 
 	// Get the clan wars
-	members, err := client.GetClanMembers(tag)
+	members, _, err := client.GetClanMembers(tag)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

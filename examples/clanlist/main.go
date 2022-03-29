@@ -67,7 +67,7 @@ func getClanList(c *cli.Context) error {
 	client := coc.NewClient(token)
 
 	// Get the clan wars
-	clans, err := client.SearchClans(coc.QParms{Name: name})
+	clans, _, err := client.SearchClans(coc.QParms{Name: name})
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
