@@ -302,6 +302,8 @@ func (c *Client) GetClanVersusRankings(locationID string, qparms ...QParms) ([]C
 // - locationId: a string used to filter by clan location identifier. For list of available
 //   locations, refer to the GetLocations function.
 //
+// - labelIds: a comma separatered list of label IDs to use for filtering results.
+//
 // - minMembers: an integet used to filter by minimum number of clan members.
 //
 // - maxMembers: an integer used to filter by maximum number of clan members.
@@ -1251,6 +1253,9 @@ func getQueryParms(qp *QParms) rest.QParms {
 	}
 	if qp.LocationID != "" {
 		qparms["locationId"] = qp.LocationID
+	}
+	if qp.LabelIDs != "" {
+		qparms["labelIds"] = qp.LabelIDs
 	}
 	if qp.MaxMembers != 0 {
 		qparms["maxMembers"] = qp.MaxMembers

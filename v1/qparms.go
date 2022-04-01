@@ -9,6 +9,7 @@ type QParms struct {
 	After         string // Limits items that occur after this marker to be returned
 	Before        string // Limits items that occur before this marker to be returned
 	Limit         int    // Limits the number of items returned
+	LabelIDs      string // Comma separated set of labels to use on searches
 	Name          string // Searches for clans by name
 	WarFrequency  string // Filters clans by war frequency
 	LocationID    string // Filters clans location identifier
