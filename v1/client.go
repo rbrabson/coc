@@ -2,7 +2,6 @@ package coc
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/rbrabson/coc/pkg/log"
@@ -938,7 +937,6 @@ func (c *Client) GetPlayer(playerTag string) (*Player, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(string(body))
 	var player Player
 	if err := json.Unmarshal(body, &player); err != nil {
 		l.Debug("failed to parse the json response")

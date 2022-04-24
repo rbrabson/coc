@@ -7,6 +7,7 @@ import (
 // Clan is a clan in Clash of Clans.
 type Clan struct {
 	BadgeUrls        BadgeUrls     `json:"badgeUrls"`
+	ChatLanguage     ChatLanguage  `json:"chatLanguage"`
 	ClanLevel        int           `json:"clanLevel"`
 	ClanPoints       int           `json:"clanPoints"`
 	ClanVersusPoints int           `json:"clanVersusPoints"`
@@ -15,6 +16,7 @@ type Clan struct {
 	Labels           []Label       `json:"labels"`
 	Location         Location      `json:"location"`
 	Members          int           `json:"members"`
+	MemberList       []ClanMember  `json:"memberList"`
 	Name             string        `json:"name"`
 	RequiredTrophies int           `json:"requiredTrophies"`
 	Tag              string        `json:"tag"`
@@ -30,6 +32,19 @@ type Clan struct {
 // String returns a string representation of a clan
 func (c Clan) String() string {
 	b, _ := json.Marshal(c)
+	return string(b)
+}
+
+// ChatLanguage is the language used in the clan chat
+type ChatLanguage struct {
+	ID           int    `json:"id"`
+	Name         string `json:"name"`
+	LanguageCode string `json:"languageCode"`
+}
+
+// String returns a string representation of a chat language
+func (cl ChatLanguage) String() string {
+	b, _ := json.Marshal(cl)
 	return string(b)
 }
 
