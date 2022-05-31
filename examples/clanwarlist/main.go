@@ -76,23 +76,25 @@ func getWarList(c *cli.Context) error {
 	// Print out a few dtails about each war
 	if len(warList) == 0 {
 		fmt.Println("No wars found")
-	} else {
-		fmt.Printf("The results from the war log for %s:\n", warList[0].Clan.Name)
-		win := 0
-		lose := 0
-		draw := 0
-		for _, war := range warList {
-			fmt.Printf("Results: %s\n", war.Result)
-			fmt.Printf("\t%s\tDestruction: %.2f, Stars: %d\n", war.Clan.Name, war.Clan.DestructionPercentage, war.Clan.Stars)
-			fmt.Printf("\t%s\tDestruction: %.2f, Stars: %d\n", war.Opponent.Name, war.Opponent.DestructionPercentage, war.Opponent.Stars)
-			if war.Result == "win" {
-				win++
-			} else if war.Result == "lose" {
-				lose++
-			} else {
-				draw++
-			}
+		return nil
+	}
+
+	fmt.Printf("The results from the war log for %s:\n", warList[0].Clan.Name)
+	win := 0
+	lose := 0
+	draw := 0
+	for _, war := range warList {
+		fmt.Printf("Results: %s\n", war.Result)
+		fmt.Printf("\t%s\tDestruction: %.2f, Stars: %d\n", war.Clan.Name, war.Clan.DestructionPercentage, war.Clan.Stars)
+		fmt.Printf("\t%s\tDestruction: %.2f, Stars: %d\n", war.Opponent.Name, war.Opponent.DestructionPercentage, war.Opponent.Stars)
+		if war.Result == "win" {
+			win++
+		} else if war.Result == "lose" {
+			lose++
+		} else {
+			draw++
 		}
+
 		fmt.Printf("Win: %d, Lose: %d, Draw: %d\n", win, lose, draw)
 	}
 

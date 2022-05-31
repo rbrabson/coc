@@ -76,10 +76,10 @@ func getClanList(c *cli.Context) error {
 	// Print out a few details about each clan
 	if len(clans) == 0 {
 		fmt.Println("No clans found")
-	} else {
-		for _, clan := range clans {
-			fmt.Printf("Name: %s, Tag: %s\n", clan.Name, clan.Tag)
-		}
+		return nil
+	}
+	for _, clan := range clans {
+		fmt.Printf("Name: %s, Tag: %s\n", clan.Name, clan.Tag)
 	}
 
 	return nil
