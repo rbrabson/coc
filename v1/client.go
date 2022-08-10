@@ -96,8 +96,6 @@ func (c *Client) GetClanLabels(qparms ...QParms) ([]Label, *Paging, error) {
 	var qp *QParms
 	if len(qparms) >= 1 {
 		qp = &qparms[0]
-	} else {
-		qp = nil
 	}
 	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
@@ -119,7 +117,7 @@ func (c *Client) GetClanLabels(qparms ...QParms) ([]Label, *Paging, error) {
 	return resp.Labels, &resp.Paging, nil
 }
 
-//  GetClanMembers list clan members.  Supported query parmeters are:
+//	GetClanMembers list clan members.  Supported query parmeters are:
 //
 // - limit: an integer that limits the number of items returned in the response
 //
@@ -150,8 +148,6 @@ func (c *Client) GetClanMembers(clanTag string, qparms ...QParms) ([]ClanMember,
 	var qp *QParms
 	if len(qparms) >= 1 {
 		qp = &qparms[0]
-	} else {
-		qp = nil
 	}
 	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
@@ -171,7 +167,6 @@ func (c *Client) GetClanMembers(clanTag string, qparms ...QParms) ([]ClanMember,
 	}
 
 	return resp.ClanMembers, &resp.Paging, nil
-
 }
 
 // GetClanRankings retrieves clan rankings for a specific location.  Supported query parmeters are:
@@ -205,8 +200,6 @@ func (c *Client) GetClanRankings(locationID string, qparms ...QParms) ([]ClanRan
 	var qp *QParms
 	if len(qparms) >= 1 {
 		qp = &qparms[0]
-	} else {
-		qp = nil
 	}
 	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
@@ -260,8 +253,6 @@ func (c *Client) GetClanVersusRankings(locationID string, qparms ...QParms) ([]C
 	var qp *QParms
 	if len(qparms) >= 1 {
 		qp = &qparms[0]
-	} else {
-		qp = nil
 	}
 	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
@@ -292,14 +283,14 @@ func (c *Client) GetClanVersusRankings(locationID string, qparms ...QParms) ([]C
 //
 // Supported query parmeters are:
 //
-// - name:  a string used to search clans by name. If name is used as part of search query,
-//   it needs to be at least three characters long. Name search parameter is interpreted as
-//   wild card search, so it may appear anywhere in the clan name.
+//   - name:  a string used to search clans by name. If name is used as part of search query,
+//     it needs to be at least three characters long. Name search parameter is interpreted as
+//     wild card search, so it may appear anywhere in the clan name.
 //
 // - warFrequency: a string used to filter by clan war frequency
 //
-// - locationId: a string used to filter by clan location identifier. For list of available
-//   locations, refer to the GetLocations function.
+//   - locationId: a string used to filter by clan location identifier. For list of available
+//     locations, refer to the GetLocations function.
 //
 // - labelIds: a comma separatered list of label IDs to use for filtering results.
 //
@@ -385,8 +376,6 @@ func (c *Client) GetClanWarLog(clanTag string, qparms ...QParms) ([]ClanWar, *Pa
 	var qp *QParms
 	if len(qparms) >= 1 {
 		qp = &qparms[0]
-	} else {
-		qp = nil
 	}
 	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
@@ -497,17 +486,14 @@ func (c *Client) GetClanWarLeagueGroup(clanTag string) (*ClanWarLeagueGroup, err
 	}
 
 	// Parse into an array of clans
-	type respType struct {
-		LeagueGroup ClanWarLeagueGroup `json:"items"`
-	}
-	var resp respType
+	var resp ClanWarLeagueGroup
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
 		return nil, err
 	}
 
-	return &resp.LeagueGroup, nil
+	return &resp, nil
 }
 
 // GetClanWarLeagueWar retrieves information about the specific clan league war.
@@ -522,7 +508,7 @@ func (c *Client) GetClanWarLeagueWar(warTag string) (*ClanWarLeagueWar, error) {
 	var sb strings.Builder
 	sb.Grow(100)
 	sb.WriteString(baseURL)
-	sb.WriteString("/clanswarleagues/wars/")
+	sb.WriteString("/clanwarleagues/wars/")
 	sb.WriteString(fmtTag(warTag))
 	url := sb.String()
 	l.Debug(url)
@@ -533,17 +519,14 @@ func (c *Client) GetClanWarLeagueWar(warTag string) (*ClanWarLeagueWar, error) {
 	}
 
 	// Parse into an array of clans
-	type respType struct {
-		LeagueWar ClanWarLeagueWar `json:"items"`
-	}
-	var resp respType
+	var resp ClanWarLeagueWar
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		l.Debug("failed to parse the json response")
 		return nil, err
 	}
 
-	return &resp.LeagueWar, nil
+	return &resp, nil
 }
 
 // GetLeague gets league information.
@@ -611,8 +594,6 @@ func (c *Client) GetLeagues(qparms ...QParms) ([]League, *Paging, error) {
 	var qp *QParms
 	if len(qparms) >= 1 {
 		qp = &qparms[0]
-	} else {
-		qp = nil
 	}
 	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
@@ -666,8 +647,6 @@ func (c *Client) GetLeagueSeasons(leagueID string, qparms ...QParms) ([]LeagueSe
 	var qp *QParms
 	if len(qparms) >= 1 {
 		qp = &qparms[0]
-	} else {
-		qp = nil
 	}
 	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
@@ -801,8 +780,6 @@ func (c *Client) GetWarLeagues(qparms ...QParms) ([]WarLeague, *Paging, error) {
 	var qp *QParms
 	if len(qparms) >= 1 {
 		qp = &qparms[0]
-	} else {
-		qp = nil
 	}
 	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
@@ -890,8 +867,6 @@ func (c *Client) GetLocations(qparms ...QParms) ([]Location, *Paging, error) {
 	var qp *QParms
 	if len(qparms) >= 1 {
 		qp = &qparms[0]
-	} else {
-		qp = nil
 	}
 	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
@@ -976,8 +951,6 @@ func (c *Client) GetPlayerLabels(qparms ...QParms) ([]Label, *Paging, error) {
 	var qp *QParms
 	if len(qparms) >= 1 {
 		qp = &qparms[0]
-	} else {
-		qp = nil
 	}
 	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
@@ -1029,8 +1002,6 @@ func (c *Client) GetPlayerRankings(locationID string, qparms ...QParms) ([]Playe
 	var qp *QParms
 	if len(qparms) >= 1 {
 		qp = &qparms[0]
-	} else {
-		qp = nil
 	}
 	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {
@@ -1084,8 +1055,6 @@ func (c *Client) GetPlayerVersusRankings(locationID string, qparms ...QParms) ([
 	var qp *QParms
 	if len(qparms) >= 1 {
 		qp = &qparms[0]
-	} else {
-		qp = nil
 	}
 	body, err := getURL(url, getQueryParms(qp), c.token)
 	if err != nil {

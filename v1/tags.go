@@ -7,9 +7,10 @@ func fmtTag(tag string) string {
 	// If the tag doesn't have a '#' character at the front, add one
 	if len(tag) == 0 {
 		return tag
-	} else if tag[0] == '#' {
-		return url.QueryEscape(tag)
-	} else {
-		return url.QueryEscape("#" + tag)
 	}
+	if tag[0] == '#' {
+		return url.QueryEscape(tag)
+	}
+	return url.QueryEscape("#" + tag)
+
 }

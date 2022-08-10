@@ -112,8 +112,8 @@ func (c *client) Get(url string) ([]byte, error) {
 
 	// If an error status code was returned by the server, pass the error back to the invoker
 	if resp.StatusCode != http.StatusOK {
-		l.Error("failed to send the request to CoC, statusCode=", resp.StatusCode, ", status=", resp.Status)
-		err := ErrHttp{StatusCode: resp.StatusCode, Status: resp.Status}
+		l.Error("failed to send the request to CoC, url=", url, ", statusCode=", resp.StatusCode, ", status=", resp.Status)
+		err := ErrHttp{URL: url, StatusCode: resp.StatusCode, Status: resp.Status}
 		return nil, err
 	}
 
@@ -184,8 +184,8 @@ func (c *client) Post(url string, body string) ([]byte, error) {
 
 	// If an error status code was returned by the server, pass the error back to the invoker
 	if resp.StatusCode != http.StatusOK {
-		l.Error("failed to send the request to CoC, statusCode=", resp.StatusCode, ", status=", resp.Status)
-		err := ErrHttp{StatusCode: resp.StatusCode, Status: resp.Status}
+		l.Error("failed to send the request to CoC, url=", url, "statusCode=", resp.StatusCode, ", status=", resp.Status)
+		err := ErrHttp{URL: url, StatusCode: resp.StatusCode, Status: resp.Status}
 		return nil, err
 	}
 
