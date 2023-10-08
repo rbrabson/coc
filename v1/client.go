@@ -1161,7 +1161,166 @@ func (c *Client) GetGoldPass() (*GoldPass, error) {
 	return &resp, nil
 }
 
-// getURL retrieves the requested URL and return the results as a byte array.
+// ListCapitalRaidSeasons retrieves the clan's capital raid seasons
+func (c *Client) ListCapitalRaidSeasons(clanTag string, qparms ...QParms) ([]ClanCapitalRaidSeasion, *Paging, error) {
+	const M = "Client.ListCapitalRaidSeasons"
+	l := log.New()
+	defer l.Sync()
+
+	l.Debugf("--> %s", M)
+	defer l.Debugf("<-- %s", M)
+
+	var sb strings.Builder
+	sb.Grow(100)
+	sb.WriteString(baseURL)
+	sb.WriteString("/clans/")
+	sb.WriteString(fmtTag(clanTag))
+	sb.WriteString("/capitalraidseasons")
+	url := sb.String()
+	l.Debug(url)
+
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	}
+	body, err := getURL(url, getQueryParms(qp), c.token)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// Parse into an array of raid seasons
+	type respType struct {
+		RaidSeasons []ClanCapitalRaidSeasion `json:"items"`
+		Paging      Paging                   `json:"paging"`
+	}
+	var resp respType
+	err = json.Unmarshal(body, &resp)
+	if err != nil {
+		l.Debug("failed to parse the json response")
+		return nil, nil, err
+	}
+
+	// Return the raid seasons
+	return resp.RaidSeasons, &resp.Paging, nil
+}
+
+// ListCapitalLeagues lists the capital leagues
+func (c *Client) ListCapitalLeagues(qparms ...QParms) ([]CapitalLeague, *Paging, error) {
+	const M = "Client.ListCapitalLeagues"
+	l := log.New()
+	defer l.Sync()
+
+	l.Debugf("--> %s", M)
+	defer l.Debugf("<-- %s", M)
+
+	var sb strings.Builder
+	sb.Grow(100)
+	sb.WriteString(baseURL)
+	sb.WriteString("/capitalleagues")
+	url := sb.String()
+	l.Debug(url)
+
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	}
+	body, err := getURL(url, getQueryParms(qp), c.token)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// Parse into an array of capital leagues
+	type respType struct {
+		CapitalLeagues []CapitalLeague `json:"items"`
+		Paging         Paging          `json:"paging"`
+	}
+	var resp respType
+	err = json.Unmarshal(body, &resp)
+	if err != nil {
+		l.Debug("failed to parse the json response")
+		return nil, nil, err
+	}
+
+	// Return the capital leagues
+	return resp.CapitalLeagues, &resp.Paging, nil
+}
+
+// GetCapitalLeague gets the capital league information
+func (c *Client) GetCapitalLeague(leagueID string) (*CapitalLeague, error) {
+	const M = "Client.GetCapitalLeague"
+	l := log.New()
+	defer l.Sync()
+
+	l.Debugf("--> %s", M)
+	defer l.Debugf("<-- %s", M)
+
+	var sb strings.Builder
+	sb.Grow(100)
+	sb.WriteString(baseURL)
+	sb.WriteString("/capitalleagues/")
+	sb.WriteString(leagueID)
+	url := sb.String()
+	l.Debug(url)
+
+	body, err := getURL(url, nil, c.token)
+	if err != nil {
+		return nil, err
+	}
+	var league CapitalLeague
+	err = json.Unmarshal(body, &league)
+	if err != nil {
+		l.Debug("failed to parse the json response")
+		return nil, err
+	}
+
+	// Return the capital league
+	return &league, nil
+}
+
+// GetCapitalRankings gets the capital rankings for a specific location
+func (c *Client) GetCapitalRankings(locationID string, qparms ...QParms) ([]ClanCapitalRanking, *Paging, error) {
+	const M = "Client.GetCapitalRankings"
+	l := log.New()
+	defer l.Sync()
+
+	l.Debugf("--> %s", M)
+	defer l.Debugf("<-- %s", M)
+
+	var sb strings.Builder
+	sb.Grow(100)
+	sb.WriteString(baseURL)
+	sb.WriteString("/locations/")
+	sb.WriteString(locationID)
+	sb.WriteString("/rankings/capitals")
+	url := sb.String()
+	l.Debug(url)
+
+	var qp *QParms
+	if len(qparms) >= 1 {
+		qp = &qparms[0]
+	}
+	body, err := getURL(url, getQueryParms(qp), c.token)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// Parse into an array of capital rankings
+	type respType struct {
+		Rankings []ClanCapitalRanking `json:"items"`
+		Paging   Paging               `json:"paging"`
+	}
+	var resp respType
+	err = json.Unmarshal(body, &resp)
+	if err != nil {
+		l.Debug("failed to parse the json response")
+		return nil, nil, err
+	}
+
+	// Return the capital rankings
+	return resp.Rankings, &resp.Paging, nil
+}
+
+// getURL retrieves the requested URL and return the results as a byte array
 func getURL(url string, qparms rest.QParms, token string) ([]byte, error) {
 	headers := rest.Headers{"Authorization": "Bearer " + token}
 	for k, v := range defaultGetHeaders {
@@ -1176,6 +1335,7 @@ func getURL(url string, qparms rest.QParms, token string) ([]byte, error) {
 	return body, nil
 }
 
+// postURL posts the body to the given URL.
 func postURL(url string, qparms rest.QParms, body string, token string) ([]byte, error) {
 	headers := rest.Headers{"Authorization": "Bearer " + token}
 	for k, v := range defaultPostHeaders {
@@ -1190,6 +1350,7 @@ func postURL(url string, qparms rest.QParms, body string, token string) ([]byte,
 	return respBody, nil
 }
 
+// getQueryParms converts the QParms structure into query parms for the REST request
 func getQueryParms(qp *QParms) rest.QParms {
 	const M = "getQueryParms"
 	l := log.New()
